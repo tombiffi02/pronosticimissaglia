@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-export function Screen({ title, subtitle, children }: { title: string; subtitle?: string; children: ReactNode }) {
+export function Screen({ title, subtitle, children }: { title: string; subtitle?: string | undefined; children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background px-4 py-8">
       <div className="mx-auto w-full max-w-md">
