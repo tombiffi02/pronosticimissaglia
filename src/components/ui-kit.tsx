@@ -1,14 +1,42 @@
 import type { ReactNode } from "react";
 
-export function Screen({ title, subtitle, children }: { title: string; subtitle?: string | undefined; children: ReactNode }) {
+export function Screen({
+  title,
+  subtitle,
+  children,
+  footer,
+}: {
+  title: string;
+  subtitle?: string | undefined;
+  children: ReactNode;
+  footer?: ReactNode;
+}) {
   return (
-    <div className="min-h-screen bg-background px-4 py-8">
+    <div className="min-h-screen bg-background px-4 pb-24 pt-8">
       <div className="mx-auto w-full max-w-md">
         <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
         {subtitle ? <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p> : null}
         <div className="mt-6">{children}</div>
       </div>
+      {footer}
     </div>
+  );
+}
+
+export function SectionTitle({ children }: { children: ReactNode }) {
+  return <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{children}</h2>;
+}
+
+export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "accent" | "warn" }) {
+  const tones = {
+    neutral: "bg-muted text-muted-foreground",
+    accent: "bg-primary/10 text-primary",
+    warn: "bg-destructive/10 text-destructive",
+  } as const;
+  return (
+    <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${tones[tone]}`}>
+      {children}
+    </span>
   );
 }
 
