@@ -145,6 +145,47 @@ export type Database = {
           },
         ]
       }
+      matchdays: {
+        Row: {
+          created_at: string
+          end_date: string | null
+          id: string
+          league_id: string
+          name: string | null
+          number: number
+          start_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          league_id: string
+          name?: string | null
+          number: number
+          start_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string | null
+          id?: string
+          league_id?: string
+          name?: string | null
+          number?: number
+          start_date?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matchdays_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       matches: {
         Row: {
           away_sets: number | null
@@ -157,7 +198,7 @@ export type Database = {
           league_id: string
           match_date: string
           match_time: string | null
-          matchday: number
+          matchday_id: string
           source: string | null
           status: string
           updated_at: string
@@ -173,7 +214,7 @@ export type Database = {
           league_id: string
           match_date: string
           match_time?: string | null
-          matchday: number
+          matchday_id: string
           source?: string | null
           status?: string
           updated_at?: string
@@ -189,7 +230,7 @@ export type Database = {
           league_id?: string
           match_date?: string
           match_time?: string | null
-          matchday?: number
+          matchday_id?: string
           source?: string | null
           status?: string
           updated_at?: string
@@ -214,6 +255,13 @@ export type Database = {
             columns: ["league_id"]
             isOneToOne: false
             referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "matches_matchday_id_fkey"
+            columns: ["matchday_id"]
+            isOneToOne: false
+            referencedRelation: "matchdays"
             referencedColumns: ["id"]
           },
         ]
@@ -389,6 +437,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_any_league_admin: { Args: { _user_id: string }; Returns: boolean }
       is_league_admin: {
         Args: { _league_id: string; _user_id: string }
         Returns: boolean
@@ -401,6 +450,7 @@ export type Database = {
         Args: { _match_id: string; _user_id: string }
         Returns: boolean
       }
+      is_reference_team_match: { Args: { _match_id: string }; Returns: boolean }
       join_league_by_code: { Args: { _invite_code: string }; Returns: string }
     }
     Enums: {
