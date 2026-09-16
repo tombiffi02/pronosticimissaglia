@@ -452,6 +452,59 @@ export type Database = {
       }
       is_reference_team_match: { Args: { _match_id: string }; Returns: boolean }
       join_league_by_code: { Args: { _invite_code: string }; Returns: string }
+      match_board: {
+        Args: { _league_id: string }
+        Returns: {
+          away_sets: number
+          away_team_id: string
+          away_team_name: string
+          home_sets: number
+          home_team_id: string
+          home_team_name: string
+          is_locked: boolean
+          is_reference_match: boolean
+          lock_at: string
+          match_date: string
+          match_id: string
+          match_time: string
+          matchday_id: string
+          matchday_name: string
+          matchday_number: number
+          my_away_sets: number
+          my_home_sets: number
+          server_now: string
+          status: string
+        }[]
+      }
+      my_prediction_history: {
+        Args: { _match_id: string }
+        Returns: {
+          away_sets: number
+          created_at: string
+          home_sets: number
+        }[]
+      }
+      prediction_lock_at: { Args: { _match_id: string }; Returns: string }
+      submit_prediction: {
+        Args: { _away_sets: number; _home_sets: number; _match_id: string }
+        Returns: {
+          away_sets: number
+          created_at: string
+          home_sets: number
+          id: string
+          locked_at: string | null
+          match_id: string
+          points: number | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "predictions"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never
