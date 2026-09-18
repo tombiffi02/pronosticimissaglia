@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_sync_logs: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          errors: string[]
+          id: string
+          league_id: string
+          matchdays_found: number
+          matches_created: number
+          matches_found: number
+          matches_skipped: number
+          matches_updated: number
+          source: string
+          source_url: string | null
+          status: string
+          teams_created: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          errors?: string[]
+          id?: string
+          league_id: string
+          matchdays_found?: number
+          matches_created?: number
+          matches_found?: number
+          matches_skipped?: number
+          matches_updated?: number
+          source?: string
+          source_url?: string | null
+          status?: string
+          teams_created?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          errors?: string[]
+          id?: string
+          league_id?: string
+          matchdays_found?: number
+          matches_created?: number
+          matches_found?: number
+          matches_skipped?: number
+          matches_updated?: number
+          source?: string
+          source_url?: string | null
+          status?: string
+          teams_created?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_sync_logs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_sync_logs_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       league_members: {
         Row: {
           id: string
