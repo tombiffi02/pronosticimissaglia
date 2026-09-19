@@ -220,8 +220,17 @@ export const syncFipavCalendar = createServerFn({ method: "POST" })
       .select("id, external_id, matchday_id, match_date, match_time, home_team_id, away_team_id")
       .eq("league_id", data.leagueId);
 
-    const matchByExternal = new Map<string, (typeof existingMatches)[number]>();
-    const matchByKey = new Map<string, (typeof existingMatches)[number]>();
+    type ExistingMatch = {
+      id: string;
+      external_id: string | null;
+      matchday_id: string;
+      match_date: string;
+      match_time: string | null;
+      home_team_id: string;
+      away_team_id: string;
+    };
+    const matchByExternal = new Map<string, ExistingMatch>();
+    const matchByKey = new Map<string, ExistingMatch>();
     for (const m of existingMatches ?? []) {
       if (m.external_id) matchByExternal.set(m.external_id, m);
       matchByKey.set(`${m.matchday_id}|${m.match_date}|${m.home_team_id}|${m.away_team_id}`, m);
