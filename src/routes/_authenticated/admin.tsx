@@ -14,6 +14,7 @@ import {
 } from "@/components/ui-kit";
 import { BottomNav } from "@/components/nav";
 import { useMembership, formatMatchDate, formatMatchTime, type Team, type Matchday } from "@/lib/league";
+import { syncFipavCalendar, type SyncSummary } from "@/lib/fipav.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -808,7 +809,7 @@ function FipavSection({ leagueId }: { leagueId: string }) {
 
         {summary ? (
           <div className="mt-3 space-y-1 text-xs">
-            <Message kind={summary.ok ? "success" : "error"}>{summary.message}</Message>
+            <Message tone={summary.ok ? "success" : "error"}>{summary.message}</Message>
             {summary.ok ? (
               <ul className="space-y-1 text-muted-foreground">
                 <li>✓ {summary.matchdaysFound} giornate trovate</li>
