@@ -16,3 +16,11 @@
 
 ## Fase 4 (da fare)
 - [ ] Calcolo punti, classifica, statistiche, notifiche
+
+## Fase 4A — Importazione calendario FIPAV
+- [x] Sorgente JSON ufficiale FIPAV (calendario per stagione/serie/genere/girone)
+- [x] Server function syncFipavCalendar (solo admin lega, verifica lato DB)
+- [x] Upsert squadre/giornate/partite idempotente, campi manuali protetti
+- [x] Sezione Admin "Calendario FIPAV" con riepilogo e log sincronizzazioni
+- [x] Import CSV mantenuto come fallback
+- [x] Test: prima e seconda importazione, aggiornamento orario, risultato manuale preservato, 0 duplicati
