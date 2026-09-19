@@ -63,6 +63,7 @@ function AdminPage() {
           <TeamsSection leagueId={leagueId} />
           <MatchdaysSection leagueId={leagueId} />
           <MatchesSection leagueId={leagueId} />
+          <FipavSection leagueId={leagueId} />
           <ImportSection leagueId={leagueId} />
         </div>
       )}
