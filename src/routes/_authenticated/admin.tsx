@@ -709,3 +709,122 @@ function ImportSection({ leagueId }: { leagueId: string }) {
     </section>
   );
 }
+
+/* ---------------- Calendario FIPAV ---------------- */
+
+function FipavSection({ leagueId }: { leagueId: string }) {
+  const queryClient = useQueryClient();
+  const { data: membership } = useMembership();
+  const { data: teams } = useTeams(leagueId);
+  const league = membership?.league;
+  const seasonYear = (league?.season ?? "").match(/\d{4}/)?.[0] ?? "2026";
+  const [form, setForm] = useState({ seasonYear, series: "B", sex: "M", girone: league?.group_name ?? "B" });
+  const [summary, setSummary] = useState<SyncSummary | null>(null);
+
+  useEffect(() => {
+    setForm((f) => ({
+      ...f,
+      seasonYear: (league?.season ?? "").match(/\d{4}/)?.[0] ?? f.seasonYear,
+      girone: league?.group_name ?? f.girone,
+    }));
+  }, [league?.season, league?.group_name]);
+
+  const referenceTeam = (teams ?? []).find((t) => t.id === league?.reference_team_id);
+
+  const lastLog = useQuery({
+    queryKey: ["fipav-last-log", leagueId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("calendar_sync_logs")
+        .select("created_at, status, matchdays_found, matches_found, matches_created, matches_updated, matches_skipped, teams_created")
+        .eq("league_id", leagueId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const sync = useMutation({
+    mutationFn: async () => await syncFipavCalendar({ data: { leagueId, ...form } }),
+    onSuccess: (res) => {
+      setSummary(res);
+      void lastLog.refetch();
+      queryClient.invalidateQueries();
+    },
+    onError: () =>
+      setSummary({
+        ok: false,
+        message: "Impossibile aggiornare il calendario. Le partite già presenti non sono state modificate.",
+        sourceUrl: "",
+        matchdaysFound: 0,
+        matchesFound: 0,
+        matchesCreated: 0,
+        matchesUpdated: 0,
+        matchesSkipped: 0,
+        teamsCreated: 0,
+        errors: [],
+      }),
+  });
+
+  return (
+    <section>
+      <SectionTitle>Calendario FIPAV</SectionTitle>
+      <Card>
+        <p className="text-sm">Fonte: calendario ufficiale FIPAV</p>
+        <p className="text-xs text-muted-foreground">
+          Stagione {league?.season ?? "—"} · {league?.championship ?? "—"}
+        </p>
+        <p className="mb-3 text-xs text-muted-foreground">
+          Squadra di riferimento: {referenceTeam?.name ?? "non impostata"}
+        </p>
+
+        <div className="grid grid-cols-2 gap-3">
+          <Field label="Anno stagione">
+            <input className={inputClass} value={form.seasonYear} onChange={(e) => setForm({ ...form, seasonYear: e.target.value })} />
+          </Field>
+          <Field label="Serie">
+            <input className={inputClass} value={form.series} onChange={(e) => setForm({ ...form, series: e.target.value })} />
+          </Field>
+          <Field label="Genere (M/F)">
+            <input className={inputClass} value={form.sex} onChange={(e) => setForm({ ...form, sex: e.target.value })} />
+          </Field>
+          <Field label="Girone">
+            <input className={inputClass} value={form.girone} onChange={(e) => setForm({ ...form, girone: e.target.value })} />
+          </Field>
+        </div>
+
+        <button className={`${buttonClass} mt-3`} disabled={sync.isPending} onClick={() => sync.mutate()}>
+          {sync.isPending ? "Aggiornamento in corso..." : "🔄 Aggiorna calendario"}
+        </button>
+
+        {lastLog.data ? (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Ultima sincronizzazione: {new Date(lastLog.data.created_at).toLocaleString("it-IT", { timeZone: "Europe/Rome" })} ·{" "}
+            {lastLog.data.matches_found} partite trovate
+          </p>
+        ) : null}
+
+        {summary ? (
+          <div className="mt-3 space-y-1 text-xs">
+            <Message kind={summary.ok ? "success" : "error"}>{summary.message}</Message>
+            {summary.ok ? (
+              <ul className="space-y-1 text-muted-foreground">
+                <li>✓ {summary.matchdaysFound} giornate trovate</li>
+                <li>✓ {summary.matchesFound} partite trovate</li>
+                <li>✓ {summary.matchesCreated} partite nuove</li>
+                <li>✓ {summary.matchesUpdated} partite aggiornate</li>
+                <li>✓ {summary.teamsCreated} nuove squadre</li>
+                {summary.matchesSkipped > 0 ? <li>⚠ {summary.matchesSkipped} partite non importate</li> : null}
+                {summary.errors.map((e, i) => (
+                  <li key={i}>⚠ {e}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : null}
+      </Card>
+    </section>
+  );
+}
