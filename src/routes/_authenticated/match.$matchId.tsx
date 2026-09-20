@@ -8,7 +8,9 @@ import {
   formatCountdown,
   formatMatchDate,
   formatMatchTime,
+  formatPoints,
   predictionErrorMessage,
+  SCORING_LABEL,
   serverOffset,
   STATUS_LABEL,
   useBoard,
@@ -144,6 +146,17 @@ function MatchPage() {
                   <p className="text-2xl font-bold tabular-nums">
                     {match.my_home_sets} — {match.my_away_sets}
                   </p>
+                  {match.my_points !== null ? (
+                    <div className="mt-2">
+                      <p className="text-xs uppercase tracking-wide text-muted-foreground">Punti</p>
+                      <p className={`text-2xl font-bold tabular-nums ${match.my_points >= 0 ? "text-primary" : "text-destructive"}`}>
+                        {formatPoints(match.my_points)}
+                      </p>
+                      {match.my_scoring_type ? (
+                        <p className="text-xs text-muted-foreground">{SCORING_LABEL[match.my_scoring_type]}</p>
+                      ) : null}
+                    </div>
+                  ) : null}
                   {locked || finished ? (
                     <p className="mt-1 text-sm">🔒 Pronostico definitivo</p>
                   ) : editing ? null : (
