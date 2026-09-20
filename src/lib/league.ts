@@ -97,3 +97,59 @@ export function predictionErrorMessage(message: string): string {
   const key = Object.keys(PREDICTION_ERRORS).find((k) => message.includes(k));
   return key ? PREDICTION_ERRORS[key]! : "Non è stato possibile salvare il pronostico.";
 }
+
+/* ---------------- Fase 4B: risultati, punti, classifica ---------------- */
+
+export type StandingRow = Database["public"]["Functions"]["league_standings"]["Returns"][number];
+export type MatchdayStandingRow = Database["public"]["Functions"]["matchday_standings"]["Returns"][number];
+
+export function formatPoints(points: number): string {
+  return points > 0 ? `+${points}` : String(points);
+}
+
+export const SCORING_LABEL: Record<string, string> = {
+  exact: "Risultato esatto",
+  winner: "Vincitore corretto",
+  wrong: "Vincitore errato",
+};
+
+export function useStandings(leagueId: string | undefined) {
+  return useQuery({
+    queryKey: ["standings", leagueId],
+    enabled: !!leagueId,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("league_standings", { _league_id: leagueId! });
+      if (error) throw error;
+      return (data ?? []) as StandingRow[];
+    },
+  });
+}
+
+export function useMatchdayStandings(leagueId: string | undefined, matchdayId: string | undefined) {
+  return useQuery({
+    queryKey: ["matchday-standings", leagueId, matchdayId],
+    enabled: !!leagueId && !!matchdayId,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("matchday_standings", {
+        _league_id: leagueId!,
+        _matchday_id: matchdayId!,
+      });
+      if (error) throw error;
+      return (data ?? []) as MatchdayStandingRow[];
+    },
+  });
+}
+
+export const RESULT_ERRORS: Record<string, string> = {
+  invalid_result: "Risultato non valido: sono ammessi solo 3-0, 3-1, 3-2, 0-3, 1-3, 2-3.",
+  not_league_admin: "Solo l'amministratore della lega può registrare un risultato.",
+  not_authenticated: "Sessione scaduta, accedi di nuovo.",
+  match_not_found: "Partita non trovata.",
+  league_settings_missing: "Impostazioni punteggio della lega mancanti.",
+  result_must_use_set_match_result: "Il risultato va registrato dalla sezione Risultati.",
+};
+
+export function resultErrorMessage(message: string): string {
+  const key = Object.keys(RESULT_ERRORS).find((k) => message.includes(k));
+  return key ? RESULT_ERRORS[key]! : "Non è stato possibile registrare il risultato.";
+}
