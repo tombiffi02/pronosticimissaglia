@@ -4,6 +4,7 @@ export function BottomNav({ isAdmin }: { isAdmin: boolean }) {
   const items: Array<{ to: string; label: string }> = [
     { to: "/home", label: "Home" },
     { to: "/matches", label: "Partite" },
+    { to: "/standings", label: "Classifica" },
     ...(isAdmin ? [{ to: "/admin", label: "Admin" }] : []),
     { to: "/profile", label: "Profilo" },
   ];

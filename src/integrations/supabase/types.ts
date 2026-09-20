@@ -211,6 +211,76 @@ export type Database = {
           },
         ]
       }
+      match_result_history: {
+        Row: {
+          changed_by: string | null
+          correct_winner_points: number
+          created_at: string
+          exact_score_points: number
+          id: string
+          league_id: string
+          match_id: string
+          new_away_sets: number
+          new_home_sets: number
+          predictions_scored: number
+          previous_away_sets: number | null
+          previous_home_sets: number | null
+          wrong_winner_points: number
+        }
+        Insert: {
+          changed_by?: string | null
+          correct_winner_points: number
+          created_at?: string
+          exact_score_points: number
+          id?: string
+          league_id: string
+          match_id: string
+          new_away_sets: number
+          new_home_sets: number
+          predictions_scored?: number
+          previous_away_sets?: number | null
+          previous_home_sets?: number | null
+          wrong_winner_points: number
+        }
+        Update: {
+          changed_by?: string | null
+          correct_winner_points?: number
+          created_at?: string
+          exact_score_points?: number
+          id?: string
+          league_id?: string
+          match_id?: string
+          new_away_sets?: number
+          new_home_sets?: number
+          predictions_scored?: number
+          previous_away_sets?: number | null
+          previous_home_sets?: number | null
+          wrong_winner_points?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "match_result_history_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_result_history_league_id_fkey"
+            columns: ["league_id"]
+            isOneToOne: false
+            referencedRelation: "leagues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_result_history_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       matchdays: {
         Row: {
           created_at: string
@@ -265,6 +335,7 @@ export type Database = {
           match_date: string
           match_time: string | null
           matchday_id: string
+          result_entered_at: string | null
           source: string | null
           status: string
           updated_at: string
@@ -281,6 +352,7 @@ export type Database = {
           match_date: string
           match_time?: string | null
           matchday_id: string
+          result_entered_at?: string | null
           source?: string | null
           status?: string
           updated_at?: string
@@ -297,6 +369,7 @@ export type Database = {
           match_date?: string
           match_time?: string | null
           matchday_id?: string
+          result_entered_at?: string | null
           source?: string | null
           status?: string
           updated_at?: string
@@ -393,6 +466,8 @@ export type Database = {
           locked_at: string | null
           match_id: string
           points: number | null
+          scored_at: string | null
+          scoring_type: string | null
           updated_at: string
           user_id: string
         }
@@ -404,6 +479,8 @@ export type Database = {
           locked_at?: string | null
           match_id: string
           points?: number | null
+          scored_at?: string | null
+          scoring_type?: string | null
           updated_at?: string
           user_id: string
         }
@@ -415,6 +492,8 @@ export type Database = {
           locked_at?: string | null
           match_id?: string
           points?: number | null
+          scored_at?: string | null
+          scoring_type?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -518,6 +597,18 @@ export type Database = {
       }
       is_reference_team_match: { Args: { _match_id: string }; Returns: boolean }
       join_league_by_code: { Args: { _invite_code: string }; Returns: string }
+      league_standings: {
+        Args: { _league_id: string }
+        Returns: {
+          display_name: string
+          exact_count: number
+          scored_predictions: number
+          total_points: number
+          user_id: string
+          winner_count: number
+          wrong_count: number
+        }[]
+      }
       match_board: {
         Args: { _league_id: string }
         Returns: {
@@ -538,8 +629,19 @@ export type Database = {
           matchday_number: number
           my_away_sets: number
           my_home_sets: number
+          my_points: number
+          my_scoring_type: string
           server_now: string
           status: string
+        }[]
+      }
+      matchday_standings: {
+        Args: { _league_id: string; _matchday_id: string }
+        Returns: {
+          display_name: string
+          scored_predictions: number
+          total_points: number
+          user_id: string
         }[]
       }
       my_prediction_history: {
@@ -551,6 +653,10 @@ export type Database = {
         }[]
       }
       prediction_lock_at: { Args: { _match_id: string }; Returns: string }
+      set_match_result: {
+        Args: { _away_sets: number; _home_sets: number; _match_id: string }
+        Returns: Json
+      }
       submit_prediction: {
         Args: { _away_sets: number; _home_sets: number; _match_id: string }
         Returns: {
@@ -561,6 +667,8 @@ export type Database = {
           locked_at: string | null
           match_id: string
           points: number | null
+          scored_at: string | null
+          scoring_type: string | null
           updated_at: string
           user_id: string
         }

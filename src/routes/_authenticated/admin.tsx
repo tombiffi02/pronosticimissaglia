@@ -13,7 +13,15 @@ import {
   secondaryButtonClass,
 } from "@/components/ui-kit";
 import { BottomNav } from "@/components/nav";
-import { useMembership, formatMatchDate, formatMatchTime, type Team, type Matchday } from "@/lib/league";
+import {
+  useMembership,
+  formatMatchDate,
+  formatMatchTime,
+  resultErrorMessage,
+  VALID_SCORES,
+  type Team,
+  type Matchday,
+} from "@/lib/league";
 import { syncFipavCalendar, type SyncSummary } from "@/lib/fipav.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -64,6 +72,7 @@ function AdminPage() {
           <TeamsSection leagueId={leagueId} />
           <MatchdaysSection leagueId={leagueId} />
           <MatchesSection leagueId={leagueId} />
+          <ResultsSection leagueId={leagueId} />
           <FipavSection leagueId={leagueId} />
           <ImportSection leagueId={leagueId} />
         </div>
