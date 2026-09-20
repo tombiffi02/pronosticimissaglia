@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui-kit";
 import {
   formatCountdown,
+  formatPoints,
   formatMatchDate,
   formatMatchTime,
   STATUS_LABEL,
@@ -54,6 +55,14 @@ export function MatchCard({ match, offset }: { match: BoardMatch; offset: number
           {hasPrediction ? (
             <p className="text-sm">
               Il tuo pronostico: <strong>{match.my_home_sets} — {match.my_away_sets}</strong>
+              {match.my_points !== null ? (
+                <>
+                  {" · "}
+                  <strong className={match.my_points >= 0 ? "text-primary" : "text-destructive"}>
+                    {formatPoints(match.my_points)} punti
+                  </strong>
+                </>
+              ) : null}
             </p>
           ) : (
             <p className="text-sm text-muted-foreground">Pronostico non inserito</p>
