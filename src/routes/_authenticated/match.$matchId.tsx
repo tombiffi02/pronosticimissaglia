@@ -22,9 +22,15 @@ export const Route = createFileRoute("/_authenticated/match/$matchId")({
   head: () => ({
     meta: [
       { title: "Pronostico partita | Prediction League Serie B" },
-      { name: "description", content: "Scegli il tuo pronostico per la partita di pallavolo di Serie B Maschile." },
+      {
+        name: "description",
+        content: "Scegli il tuo pronostico per la partita di pallavolo di Serie B Maschile.",
+      },
       { property: "og:title", content: "Pronostico partita | Prediction League Serie B" },
-      { property: "og:description", content: "Scegli il tuo pronostico per la partita di pallavolo di Serie B Maschile." },
+      {
+        property: "og:description",
+        content: "Scegli il tuo pronostico per la partita di pallavolo di Serie B Maschile.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -78,12 +84,18 @@ function MatchPage() {
   });
 
   if (isLoading) {
-    return <Screen title="Partita"><p className="text-sm text-muted-foreground">Caricamento...</p></Screen>;
+    return (
+      <Screen title="Partita">
+        <p className="text-sm text-muted-foreground">Caricamento...</p>
+      </Screen>
+    );
   }
   if (!match) {
     return (
       <Screen title="Partita">
-        <Card><p className="text-sm">Partita non trovata.</p></Card>
+        <Card>
+          <p className="text-sm">Partita non trovata.</p>
+        </Card>
       </Screen>
     );
   }
@@ -92,7 +104,8 @@ function MatchPage() {
   const locked = !match.lock_at || lockMs <= 0;
   const finished = match.status === "finished" && match.home_sets !== null;
   const hasPrediction = match.my_home_sets !== null && match.my_away_sets !== null;
-  const canPredict = !match.is_reference_match && !locked && !finished && match.status !== "cancelled";
+  const canPredict =
+    !match.is_reference_match && !locked && !finished && match.status !== "cancelled";
 
   return (
     <Screen title="Partita" footer={<BottomNav isAdmin={membership?.role === "admin"} />}>
@@ -111,7 +124,9 @@ function MatchPage() {
           </div>
           {finished ? (
             <div className="mt-4 rounded-lg bg-muted p-3 text-center">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">Risultato finale</p>
+              <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                Risultato finale
+              </p>
               <p className="mt-1 text-2xl font-bold tabular-nums">
                 {match.home_sets} — {match.away_sets}
               </p>
@@ -121,7 +136,9 @@ function MatchPage() {
 
         {match.is_reference_match ? (
           <Card>
-            <p className="text-center text-sm font-bold uppercase tracking-wide text-primary">La nostra partita</p>
+            <p className="text-center text-sm font-bold uppercase tracking-wide text-primary">
+              La nostra partita
+            </p>
             <p className="mt-2 text-center text-sm text-muted-foreground">
               Questa partita non fa parte del gioco: non è pronosticabile.
             </p>
@@ -133,8 +150,11 @@ function MatchPage() {
               locked ? (
                 <p className="text-sm font-semibold">🔒 Pronostici chiusi</p>
               ) : (
-                <p className={`text-sm ${lockMs < 5 * 60 * 1000 ? "font-semibold text-destructive" : "text-muted-foreground"}`}>
-                  {lockMs < 5 * 60 * 1000 ? "⚠️ " : ""}Chiusura tra <strong className="tabular-nums">{formatCountdown(lockMs)}</strong>
+                <p
+                  className={`text-sm ${lockMs < 5 * 60 * 1000 ? "font-semibold text-destructive" : "text-muted-foreground"}`}
+                >
+                  {lockMs < 5 * 60 * 1000 ? "⚠️ " : ""}Chiusura tra{" "}
+                  <strong className="tabular-nums">{formatCountdown(lockMs)}</strong>
                 </p>
               )
             ) : null}
@@ -142,18 +162,24 @@ function MatchPage() {
             <div className="mt-3">
               {hasPrediction ? (
                 <>
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground">Il tuo pronostico</p>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Il tuo pronostico
+                  </p>
                   <p className="text-2xl font-bold tabular-nums">
                     {match.my_home_sets} — {match.my_away_sets}
                   </p>
                   {match.my_points !== null ? (
                     <div className="mt-2">
                       <p className="text-xs uppercase tracking-wide text-muted-foreground">Punti</p>
-                      <p className={`text-2xl font-bold tabular-nums ${match.my_points >= 0 ? "text-primary" : "text-destructive"}`}>
+                      <p
+                        className={`text-2xl font-bold tabular-nums ${match.my_points >= 0 ? "text-primary" : "text-destructive"}`}
+                      >
                         {formatPoints(match.my_points)}
                       </p>
                       {match.my_scoring_type ? (
-                        <p className="text-xs text-muted-foreground">{SCORING_LABEL[match.my_scoring_type]}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {SCORING_LABEL[match.my_scoring_type]}
+                        </p>
                       ) : null}
                     </div>
                   ) : null}
@@ -175,16 +201,23 @@ function MatchPage() {
 
             {canPredict && (!hasPrediction || editing) ? (
               <div className="mt-4">
-                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Scegli il risultato</p>
+                <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">
+                  Scegli il risultato
+                </p>
                 <div className="grid grid-cols-3 gap-2">
                   {VALID_SCORES.map(([h, a]) => {
                     const selected = choice?.[0] === h && choice?.[1] === a;
                     return (
                       <button
                         key={`${h}-${a}`}
-                        onClick={() => { setChoice([h, a]); setSaved(false); }}
+                        onClick={() => {
+                          setChoice([h, a]);
+                          setSaved(false);
+                        }}
                         className={`rounded-lg border py-3 text-sm font-bold tabular-nums ${
-                          selected ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background"
+                          selected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-input bg-background"
                         }`}
                       >
                         {h} — {a}
@@ -195,7 +228,9 @@ function MatchPage() {
 
                 {choice ? (
                   <div className="mt-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Il tuo pronostico</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                      Il tuo pronostico
+                    </p>
                     <p className="text-sm font-semibold">
                       {match.home_team_name} {choice[0]}–{choice[1]} {match.away_team_name}
                     </p>
@@ -226,14 +261,22 @@ function MatchPage() {
 
         {(history.data?.length ?? 0) > 0 ? (
           <Card>
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">Storico modifiche</p>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              Storico modifiche
+            </p>
             <ul className="mt-2 space-y-1 text-sm">
               {history.data!.map((h, i) => (
                 <li key={i} className="flex justify-between">
                   <span className="text-muted-foreground">
-                    {new Date(h.created_at).toLocaleString("it-IT", { timeZone: "Europe/Rome", dateStyle: "short", timeStyle: "short" })}
+                    {new Date(h.created_at).toLocaleString("it-IT", {
+                      timeZone: "Europe/Rome",
+                      dateStyle: "short",
+                      timeStyle: "short",
+                    })}
                   </span>
-                  <span className="font-semibold tabular-nums">{h.home_sets}–{h.away_sets}</span>
+                  <span className="font-semibold tabular-nums">
+                    {h.home_sets}–{h.away_sets}
+                  </span>
                 </li>
               ))}
             </ul>

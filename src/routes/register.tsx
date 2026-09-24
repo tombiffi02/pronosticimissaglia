@@ -4,12 +4,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { Screen, Card, Field, Message, inputClass, buttonClass } from "@/components/ui-kit";
 
 export const Route = createFileRoute("/register")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Registrati | Prediction League Serie B" },
-      { name: "description", content: "Crea il tuo account per partecipare alla prediction league privata di pallavolo." },
+      {
+        name: "description",
+        content: "Crea il tuo account per partecipare alla prediction league privata di pallavolo.",
+      },
       { property: "og:title", content: "Registrati | Prediction League Serie B" },
-      { property: "og:description", content: "Crea il tuo account per partecipare alla prediction league privata di pallavolo." },
+      {
+        property: "og:description",
+        content: "Crea il tuo account per partecipare alla prediction league privata di pallavolo.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -58,13 +65,31 @@ function RegisterPage() {
           <Message>{error}</Message>
           <Message tone="success">{info}</Message>
           <Field label="Nome visualizzato">
-            <input className={inputClass} required value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+            <input
+              className={inputClass}
+              required
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+            />
           </Field>
           <Field label="Email">
-            <input className={inputClass} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input
+              className={inputClass}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Field>
           <Field label="Password">
-            <input className={inputClass} type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input
+              className={inputClass}
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Field>
           <button className={buttonClass} type="submit" disabled={loading}>
             {loading ? "Creazione account..." : "Crea account"}

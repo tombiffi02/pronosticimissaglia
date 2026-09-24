@@ -28,6 +28,16 @@ export function useMembership() {
   return useQuery({ queryKey: ["membership"], queryFn: fetchMembership });
 }
 
+export function useCurrentUserId() {
+  return useQuery({
+    queryKey: ["current-user-id"],
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return data.user?.id ?? null;
+    },
+  });
+}
+
 export function useBoard(leagueId: string | undefined) {
   return useQuery({
     queryKey: ["board", leagueId],
@@ -101,7 +111,8 @@ export function predictionErrorMessage(message: string): string {
 /* ---------------- Fase 4B: risultati, punti, classifica ---------------- */
 
 export type StandingRow = Database["public"]["Functions"]["league_standings"]["Returns"][number];
-export type MatchdayStandingRow = Database["public"]["Functions"]["matchday_standings"]["Returns"][number];
+export type MatchdayStandingRow =
+  Database["public"]["Functions"]["matchday_standings"]["Returns"][number];
 
 export function formatPoints(points: number): string {
   return points > 0 ? `+${points}` : String(points);

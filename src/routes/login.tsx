@@ -4,12 +4,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { Screen, Card, Field, Message, inputClass, buttonClass } from "@/components/ui-kit";
 
 export const Route = createFileRoute("/login")({
+  ssr: false,
   head: () => ({
     meta: [
       { title: "Accedi | Prediction League Serie B" },
-      { name: "description", content: "Accedi alla prediction league privata di pallavolo Serie B Maschile." },
+      {
+        name: "description",
+        content: "Accedi alla prediction league privata di pallavolo Serie B Maschile.",
+      },
       { property: "og:title", content: "Accedi | Prediction League Serie B" },
-      { property: "og:description", content: "Accedi alla prediction league privata di pallavolo Serie B Maschile." },
+      {
+        property: "og:description",
+        content: "Accedi alla prediction league privata di pallavolo Serie B Maschile.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -43,10 +50,22 @@ function LoginPage() {
         <form onSubmit={onSubmit}>
           <Message>{error}</Message>
           <Field label="Email">
-            <input className={inputClass} type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input
+              className={inputClass}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Field>
           <Field label="Password">
-            <input className={inputClass} type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            <input
+              className={inputClass}
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Field>
           <button className={buttonClass} type="submit" disabled={loading}>
             {loading ? "Accesso in corso..." : "Accedi"}

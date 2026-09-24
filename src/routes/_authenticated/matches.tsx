@@ -8,9 +8,15 @@ export const Route = createFileRoute("/_authenticated/matches")({
   head: () => ({
     meta: [
       { title: "Calendario partite | Prediction League Serie B" },
-      { name: "description", content: "Calendario delle partite per giornata della prediction league di pallavolo." },
+      {
+        name: "description",
+        content: "Calendario delle partite per giornata della prediction league di pallavolo.",
+      },
       { property: "og:title", content: "Calendario partite | Prediction League Serie B" },
-      { property: "og:description", content: "Calendario delle partite per giornata della prediction league di pallavolo." },
+      {
+        property: "og:description",
+        content: "Calendario delle partite per giornata della prediction league di pallavolo.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -31,7 +37,11 @@ function MatchesPage() {
   }
 
   return (
-    <Screen title="Partite" subtitle="Calendario per giornata" footer={<BottomNav isAdmin={membership?.role === "admin"} />}>
+    <Screen
+      title="Partite"
+      subtitle="Calendario per giornata"
+      footer={<BottomNav isAdmin={membership?.role === "admin"} />}
+    >
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Caricamento...</p>
       ) : groups.size === 0 ? (

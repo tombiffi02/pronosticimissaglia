@@ -8,7 +8,12 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  */
 const FIPAV_BASE = "https://pub-8394085fb0ca451eaa42bc05b01c416f.r2.dev/public/json";
 
-export function fipavCalendarUrl(input: { seasonYear: string; series: string; sex: string; girone: string }) {
+export function fipavCalendarUrl(input: {
+  seasonYear: string;
+  series: string;
+  sex: string;
+  girone: string;
+}) {
   return `${FIPAV_BASE}/${input.seasonYear}/${input.series}/${input.sex}/${input.girone}/calendario.json`;
 }
 
@@ -37,7 +42,11 @@ type FipavMatch = {
   team2?: FipavTeam;
 };
 
-const norm = (s: string) => s.toUpperCase().replace(/[^A-Z0-9]+/g, " ").trim();
+const norm = (s: string) =>
+  s
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, " ")
+    .trim();
 
 function toIsoDate(value: string | undefined): string | null {
   if (!value) return null;
@@ -55,13 +64,21 @@ function toTime(value: string | undefined): string | null {
 
 export const syncFipavCalendar = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { leagueId: string; seasonYear: string; series: string; sex: string; girone: string }) => {
-    if (!/^[0-9]{4}$/.test(input.seasonYear)) throw new Error("Anno stagione non valido.");
-    if (!/^[A-Za-z0-9]{1,3}$/.test(input.series)) throw new Error("Serie non valida.");
-    if (!/^[MF]$/i.test(input.sex)) throw new Error("Genere non valido.");
-    if (!/^[A-Za-z0-9]{1,3}$/.test(input.girone)) throw new Error("Girone non valido.");
-    return input;
-  })
+  .inputValidator(
+    (input: {
+      leagueId: string;
+      seasonYear: string;
+      series: string;
+      sex: string;
+      girone: string;
+    }) => {
+      if (!/^[0-9]{4}$/.test(input.seasonYear)) throw new Error("Anno stagione non valido.");
+      if (!/^[A-Za-z0-9]{1,3}$/.test(input.series)) throw new Error("Serie non valida.");
+      if (!/^[MF]$/i.test(input.sex)) throw new Error("Genere non valido.");
+      if (!/^[A-Za-z0-9]{1,3}$/.test(input.girone)) throw new Error("Girone non valido.");
+      return input;
+    },
+  )
   .handler(async ({ data, context }): Promise<SyncSummary> => {
     const { supabase, userId } = context;
     const sourceUrl = fipavCalendarUrl(data);
@@ -103,13 +120,18 @@ export const syncFipavCalendar = createServerFn({ method: "POST" })
     } catch {
       return {
         ...base,
-        message: "Impossibile aggiornare il calendario. Le partite già presenti non sono state modificate.",
+        message:
+          "Impossibile aggiornare il calendario. Le partite già presenti non sono state modificate.",
       };
     }
 
     const source = payload.data;
     const rawMatches = (source?.matches ?? []).filter(
-      (m) => m.team1?.name && m.team2?.name && norm(m.team1.name) !== "RIPOSA" && norm(m.team2.name) !== "RIPOSA",
+      (m) =>
+        m.team1?.name &&
+        m.team2?.name &&
+        norm(m.team1.name) !== "RIPOSA" &&
+        norm(m.team2.name) !== "RIPOSA",
     );
     if (rawMatches.length === 0) {
       return {
@@ -285,7 +307,10 @@ export const syncFipavCalendar = createServerFn({ method: "POST" })
           existing.away_team_id === awayId &&
           (existing.external_id ?? null) === externalId;
         if (unchanged) continue;
-        const { error } = await supabase.from("matches").update(calendarFields).eq("id", existing.id);
+        const { error } = await supabase
+          .from("matches")
+          .update(calendarFields)
+          .eq("id", existing.id);
         if (error) {
           skipped += 1;
           errors.push(`${label}: aggiornamento non riuscito.`);
@@ -312,7 +337,10 @@ export const syncFipavCalendar = createServerFn({ method: "POST" })
 
     const summary: SyncSummary = {
       ok: true,
-      message: errors.length === 0 ? "Calendario aggiornato." : "Calendario aggiornato con alcune segnalazioni.",
+      message:
+        errors.length === 0
+          ? "Calendario aggiornato."
+          : "Calendario aggiornato con alcune segnalazioni.",
       sourceUrl,
       ...(source?.title ? { title: source.title } : {}),
       matchdaysFound: dayRange.size,

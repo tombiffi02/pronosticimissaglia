@@ -8,9 +8,15 @@ export const Route = createFileRoute("/_authenticated/setup")({
   head: () => ({
     meta: [
       { title: "Entra in una lega | Prediction League Serie B" },
-      { name: "description", content: "Inserisci il codice di invito per entrare nella tua lega privata di pronostici." },
+      {
+        name: "description",
+        content: "Inserisci il codice di invito per entrare nella tua lega privata di pronostici.",
+      },
       { property: "og:title", content: "Entra in una lega | Prediction League Serie B" },
-      { property: "og:description", content: "Inserisci il codice di invito per entrare nella tua lega privata di pronostici." },
+      {
+        property: "og:description",
+        content: "Inserisci il codice di invito per entrare nella tua lega privata di pronostici.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

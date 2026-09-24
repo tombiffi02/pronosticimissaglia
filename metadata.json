@@ -1,0 +1,6 @@
+{
+  "name": "Prediction League Serie B Maschile",
+  "description": "Lega privata di pronostici sulle partite di pallavolo Serie B Maschile.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

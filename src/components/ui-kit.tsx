@@ -24,17 +24,29 @@ export function Screen({
 }
 
 export function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{children}</h2>;
+  return (
+    <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      {children}
+    </h2>
+  );
 }
 
-export function Badge({ children, tone = "neutral" }: { children: ReactNode; tone?: "neutral" | "accent" | "warn" }) {
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: "neutral" | "accent" | "warn";
+}) {
   const tones = {
     neutral: "bg-muted text-muted-foreground",
     accent: "bg-primary/10 text-primary",
     warn: "bg-destructive/10 text-destructive",
   } as const;
   return (
-    <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${tones[tone]}`}>
+    <span
+      className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${tones[tone]}`}
+    >
       {children}
     </span>
   );
@@ -42,7 +54,9 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
 
 export function Card({ children }: { children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm">{children}</div>
+    <div className="rounded-xl border border-border bg-card p-4 text-card-foreground shadow-sm">
+      {children}
+    </div>
   );
 }
 
@@ -64,9 +78,17 @@ export const buttonClass =
 export const secondaryButtonClass =
   "w-full rounded-md border border-input bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-accent";
 
-export function Message({ tone = "error", children }: { tone?: "error" | "success"; children: ReactNode }) {
+export function Message({
+  tone = "error",
+  children,
+}: {
+  tone?: "error" | "success";
+  children: ReactNode;
+}) {
   if (!children) return null;
   return (
-    <p className={`mb-4 text-sm ${tone === "error" ? "text-destructive" : "text-foreground"}`}>{children}</p>
+    <p className={`mb-4 text-sm ${tone === "error" ? "text-destructive" : "text-foreground"}`}>
+      {children}
+    </p>
   );
 }

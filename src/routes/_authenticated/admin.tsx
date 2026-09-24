@@ -11,8 +11,7 @@ import {
   inputClass,
   buttonClass,
   secondaryButtonClass,
-} from "@/components/ui-kit";
-import { BottomNav } from "@/components/nav";
+} from "@/components/dark-ui-kit";
 import {
   useMembership,
   formatMatchDate,
@@ -28,9 +27,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin | Prediction League Serie B" },
-      { name: "description", content: "Gestione campionato, squadre, giornate e partite della lega." },
+      {
+        name: "description",
+        content: "Gestione campionato, squadre, giornate e partite della lega.",
+      },
       { property: "og:title", content: "Admin | Prediction League Serie B" },
-      { property: "og:description", content: "Gestione campionato, squadre, giornate e partite della lega." },
+      {
+        property: "og:description",
+        content: "Gestione campionato, squadre, giornate e partite della lega.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -59,12 +64,14 @@ function AdminPage() {
   const leagueId = membership?.league_id;
 
   return (
-    <Screen title="Admin" subtitle="Campionato, squadre, giornate e partite" footer={<BottomNav isAdmin={!!isAdmin} />}>
+    <Screen title="Admin" subtitle="Campionato, squadre, giornate e partite" isAdmin={isAdmin}>
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Caricamento...</p>
+        <p className="text-sm text-white/60">Caricamento...</p>
       ) : !isAdmin || !leagueId ? (
         <Card>
-          <p className="text-sm text-muted-foreground">Questa sezione è riservata all'amministratore della lega.</p>
+          <p className="text-sm text-white/60">
+            Questa sezione è riservata all'amministratore della lega.
+          </p>
         </Card>
       ) : (
         <div className="space-y-10">
@@ -72,7 +79,6 @@ function AdminPage() {
           <TeamsSection leagueId={leagueId} />
           <MatchdaysSection leagueId={leagueId} />
           <MatchesSection leagueId={leagueId} />
-          <ResultsSection leagueId={leagueId} />
           <FipavSection leagueId={leagueId} />
           <ImportSection leagueId={leagueId} />
         </div>
@@ -121,7 +127,9 @@ function useMatches(leagueId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("matches")
-        .select("id, matchday_id, match_date, match_time, home_team_id, away_team_id, home_sets, away_sets, status, external_id")
+        .select(
+          "id, matchday_id, match_date, match_time, home_team_id, away_team_id, home_sets, away_sets, status, external_id",
+        )
         .eq("league_id", leagueId)
         .order("match_date");
       if (error) throw error;
@@ -138,7 +146,12 @@ function ChampionshipSection({ leagueId }: { leagueId: string }) {
   const { data: teams } = useTeams(leagueId);
   const league = membership?.league;
 
-  const [form, setForm] = useState({ championship: "", season: "", group_name: "", reference_team_id: "" });
+  const [form, setForm] = useState({
+    championship: "",
+    season: "",
+    group_name: "",
+    reference_team_id: "",
+  });
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
@@ -150,7 +163,13 @@ function ChampionshipSection({ leagueId }: { leagueId: string }) {
       group_name: league.group_name ?? "",
       reference_team_id: league.reference_team_id ?? "",
     });
-  }, [league?.id, league?.championship, league?.season, league?.group_name, league?.reference_team_id]);
+  }, [
+    league?.id,
+    league?.championship,
+    league?.season,
+    league?.group_name,
+    league?.reference_team_id,
+  ]);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -183,13 +202,26 @@ function ChampionshipSection({ leagueId }: { leagueId: string }) {
         <Message>{err}</Message>
         <Message tone="success">{msg}</Message>
         <Field label="Campionato">
-          <input className={inputClass} value={form.championship} onChange={(e) => setForm({ ...form, championship: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.championship}
+            onChange={(e) => setForm({ ...form, championship: e.target.value })}
+          />
         </Field>
         <Field label="Stagione">
-          <input className={inputClass} value={form.season} onChange={(e) => setForm({ ...form, season: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.season}
+            onChange={(e) => setForm({ ...form, season: e.target.value })}
+          />
         </Field>
         <Field label="Girone">
-          <input className={inputClass} value={form.group_name} onChange={(e) => setForm({ ...form, group_name: e.target.value })} placeholder="B" />
+          <input
+            className={inputClass}
+            value={form.group_name}
+            onChange={(e) => setForm({ ...form, group_name: e.target.value })}
+            placeholder="B"
+          />
         </Field>
         <Field label="Squadra di riferimento">
           <select
@@ -271,22 +303,47 @@ function TeamsSection({ leagueId }: { leagueId: string }) {
       <Card>
         <Message>{err}</Message>
         <Field label="Nome squadra">
-          <input className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+          />
         </Field>
         <Field label="Nome breve">
-          <input className={inputClass} value={form.short_name} onChange={(e) => setForm({ ...form, short_name: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.short_name}
+            onChange={(e) => setForm({ ...form, short_name: e.target.value })}
+          />
         </Field>
         <Field label="Girone">
-          <input className={inputClass} value={form.group_name} onChange={(e) => setForm({ ...form, group_name: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.group_name}
+            onChange={(e) => setForm({ ...form, group_name: e.target.value })}
+          />
         </Field>
         <Field label="Logo (URL)">
-          <input className={inputClass} value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} />
+          <input
+            className={inputClass}
+            value={form.logo_url}
+            onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
+          />
         </Field>
         <Field label="Identificativo esterno">
-          <input className={inputClass} value={form.external_id} onChange={(e) => setForm({ ...form, external_id: e.target.value })} placeholder="FIPAV_123" />
+          <input
+            className={inputClass}
+            value={form.external_id}
+            onChange={(e) => setForm({ ...form, external_id: e.target.value })}
+            placeholder="FIPAV_123"
+          />
         </Field>
         <div className="flex gap-2">
-          <button className={buttonClass} disabled={!form.name.trim() || save.isPending} onClick={() => save.mutate()}>
+          <button
+            className={buttonClass}
+            disabled={!form.name.trim() || save.isPending}
+            onClick={() => save.mutate()}
+          >
             {form.id ? "Salva modifiche" : "Aggiungi squadra"}
           </button>
           {form.id ? (
@@ -299,7 +356,10 @@ function TeamsSection({ leagueId }: { leagueId: string }) {
 
       <ul className="mt-3 space-y-2">
         {(teams ?? []).map((t) => (
-          <li key={t.id} className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card p-3">
+          <li
+            key={t.id}
+            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card p-3"
+          >
             <div>
               <p className="text-sm font-semibold">{t.name}</p>
               <p className="text-xs text-muted-foreground">
@@ -327,7 +387,10 @@ function TeamsSection({ leagueId }: { leagueId: string }) {
               {used.has(t.id) ? (
                 <span className="text-xs text-muted-foreground">in uso</span>
               ) : (
-                <button className="text-xs font-medium text-destructive underline" onClick={() => remove.mutate(t.id)}>
+                <button
+                  className="text-xs font-medium text-destructive underline"
+                  onClick={() => remove.mutate(t.id)}
+                >
                   Elimina
                 </button>
               )}
@@ -392,19 +455,44 @@ function MatchdaysSection({ leagueId }: { leagueId: string }) {
       <Card>
         <Message>{err}</Message>
         <Field label="Numero">
-          <input className={inputClass} type="number" min={1} value={form.number} onChange={(e) => setForm({ ...form, number: e.target.value })} />
+          <input
+            className={inputClass}
+            type="number"
+            min={1}
+            value={form.number}
+            onChange={(e) => setForm({ ...form, number: e.target.value })}
+          />
         </Field>
         <Field label="Nome (opzionale)">
-          <input className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Giornata 1" />
+          <input
+            className={inputClass}
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="Giornata 1"
+          />
         </Field>
         <Field label="Data inizio">
-          <input className={inputClass} type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} />
+          <input
+            className={inputClass}
+            type="date"
+            value={form.start_date}
+            onChange={(e) => setForm({ ...form, start_date: e.target.value })}
+          />
         </Field>
         <Field label="Data fine">
-          <input className={inputClass} type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} />
+          <input
+            className={inputClass}
+            type="date"
+            value={form.end_date}
+            onChange={(e) => setForm({ ...form, end_date: e.target.value })}
+          />
         </Field>
         <div className="flex gap-2">
-          <button className={buttonClass} disabled={!form.number || save.isPending} onClick={() => save.mutate()}>
+          <button
+            className={buttonClass}
+            disabled={!form.number || save.isPending}
+            onClick={() => save.mutate()}
+          >
             {form.id ? "Salva modifiche" : "Crea giornata"}
           </button>
           {form.id ? (
@@ -417,7 +505,10 @@ function MatchdaysSection({ leagueId }: { leagueId: string }) {
 
       <ul className="mt-3 space-y-2">
         {(matchdays ?? []).map((md) => (
-          <li key={md.id} className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card p-3">
+          <li
+            key={md.id}
+            className="flex items-center justify-between gap-2 rounded-lg border border-border bg-card p-3"
+          >
             <div>
               <p className="text-sm font-semibold">{md.name ?? `Giornata ${md.number}`}</p>
               <p className="text-xs text-muted-foreground">{count(md.id)} partite</p>
@@ -438,7 +529,10 @@ function MatchdaysSection({ leagueId }: { leagueId: string }) {
                 Modifica
               </button>
               {count(md.id) === 0 ? (
-                <button className="text-xs font-medium text-destructive underline" onClick={() => remove.mutate(md.id)}>
+                <button
+                  className="text-xs font-medium text-destructive underline"
+                  onClick={() => remove.mutate(md.id)}
+                >
                   Elimina
                 </button>
               ) : null}
@@ -478,7 +572,8 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
 
   const save = useMutation({
     mutationFn: async () => {
-      if (form.home_team_id === form.away_team_id) throw new Error("Le due squadre devono essere diverse.");
+      if (form.home_team_id === form.away_team_id)
+        throw new Error("Le due squadre devono essere diverse.");
       const [h, a] = form.result ? form.result.split("-").map(Number) : [null, null];
       const payload = {
         league_id: leagueId,
@@ -526,7 +621,11 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
       <Card>
         <Message>{err}</Message>
         <Field label="Giornata">
-          <select className={inputClass} value={form.matchday_id} onChange={(e) => setForm({ ...form, matchday_id: e.target.value })}>
+          <select
+            className={inputClass}
+            value={form.matchday_id}
+            onChange={(e) => setForm({ ...form, matchday_id: e.target.value })}
+          >
             <option value="">Seleziona</option>
             {(matchdays ?? []).map((md) => (
               <option key={md.id} value={md.id}>
@@ -536,13 +635,27 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
           </select>
         </Field>
         <Field label="Data">
-          <input className={inputClass} type="date" value={form.match_date} onChange={(e) => setForm({ ...form, match_date: e.target.value })} />
+          <input
+            className={inputClass}
+            type="date"
+            value={form.match_date}
+            onChange={(e) => setForm({ ...form, match_date: e.target.value })}
+          />
         </Field>
         <Field label="Ora">
-          <input className={inputClass} type="time" value={form.match_time} onChange={(e) => setForm({ ...form, match_time: e.target.value })} />
+          <input
+            className={inputClass}
+            type="time"
+            value={form.match_time}
+            onChange={(e) => setForm({ ...form, match_time: e.target.value })}
+          />
         </Field>
         <Field label="Squadra di casa">
-          <select className={inputClass} value={form.home_team_id} onChange={(e) => setForm({ ...form, home_team_id: e.target.value })}>
+          <select
+            className={inputClass}
+            value={form.home_team_id}
+            onChange={(e) => setForm({ ...form, home_team_id: e.target.value })}
+          >
             <option value="">Seleziona</option>
             {(teams ?? []).map((t) => (
               <option key={t.id} value={t.id}>
@@ -552,7 +665,11 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
           </select>
         </Field>
         <Field label="Squadra ospite">
-          <select className={inputClass} value={form.away_team_id} onChange={(e) => setForm({ ...form, away_team_id: e.target.value })}>
+          <select
+            className={inputClass}
+            value={form.away_team_id}
+            onChange={(e) => setForm({ ...form, away_team_id: e.target.value })}
+          >
             <option value="">Seleziona</option>
             {(teams ?? []).map((t) => (
               <option key={t.id} value={t.id}>
@@ -562,7 +679,11 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
           </select>
         </Field>
         <Field label="Stato">
-          <select className={inputClass} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+          <select
+            className={inputClass}
+            value={form.status}
+            onChange={(e) => setForm({ ...form, status: e.target.value })}
+          >
             {STATUSES.map((s) => (
               <option key={s} value={s}>
                 {s}
@@ -571,7 +692,11 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
           </select>
         </Field>
         <Field label="Risultato finale">
-          <select className={inputClass} value={form.result} onChange={(e) => setForm({ ...form, result: e.target.value })}>
+          <select
+            className={inputClass}
+            value={form.result}
+            onChange={(e) => setForm({ ...form, result: e.target.value })}
+          >
             {VALID_RESULTS.map((r) => (
               <option key={r} value={r}>
                 {r || "Non disputata"}
@@ -580,10 +705,19 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
           </select>
         </Field>
         <Field label="Identificativo esterno">
-          <input className={inputClass} value={form.external_id} onChange={(e) => setForm({ ...form, external_id: e.target.value })} placeholder="FIPAV_123456" />
+          <input
+            className={inputClass}
+            value={form.external_id}
+            onChange={(e) => setForm({ ...form, external_id: e.target.value })}
+            placeholder="FIPAV_123456"
+          />
         </Field>
         <div className="flex gap-2">
-          <button className={buttonClass} disabled={!canSave || save.isPending} onClick={() => save.mutate()}>
+          <button
+            className={buttonClass}
+            disabled={!canSave || save.isPending}
+            onClick={() => save.mutate()}
+          >
             {form.id ? "Salva modifiche" : "Crea partita"}
           </button>
           {form.id ? (
@@ -601,7 +735,9 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
               {formatMatchDate(m.match_date)} · {formatMatchTime(m.match_time)} · {m.status}
             </p>
             <p className="text-sm font-semibold">
-              {teamName(m.home_team_id)} {m.home_sets !== null ? `${m.home_sets} — ${m.away_sets}` : "vs"} {teamName(m.away_team_id)}
+              {teamName(m.home_team_id)}{" "}
+              {m.home_sets !== null ? `${m.home_sets} — ${m.away_sets}` : "vs"}{" "}
+              {teamName(m.away_team_id)}
             </p>
             <div className="mt-1 flex gap-3">
               <button
@@ -622,7 +758,10 @@ function MatchesSection({ leagueId }: { leagueId: string }) {
               >
                 Modifica
               </button>
-              <button className="text-xs font-medium text-destructive underline" onClick={() => remove.mutate(m.id)}>
+              <button
+                className="text-xs font-medium text-destructive underline"
+                onClick={() => remove.mutate(m.id)}
+              >
                 Elimina
               </button>
             </div>
@@ -651,7 +790,11 @@ function ImportSection({ leagueId }: { leagueId: string }) {
         .filter(Boolean);
       const out: string[] = [];
       const findTeam = (name: string) =>
-        (teams ?? []).find((t) => t.name.toLowerCase() === name.toLowerCase() || (t.short_name ?? "").toLowerCase() === name.toLowerCase());
+        (teams ?? []).find(
+          (t) =>
+            t.name.toLowerCase() === name.toLowerCase() ||
+            (t.short_name ?? "").toLowerCase() === name.toLowerCase(),
+        );
 
       for (const [i, line] of lines.entries()) {
         if (i === 0 && line.toLowerCase().startsWith("giornata")) continue;
@@ -660,8 +803,14 @@ function ImportSection({ leagueId }: { leagueId: string }) {
         const md = (matchdays ?? []).find((x) => String(x.number) === gio);
         const ht = findTeam(home ?? "");
         const at = findTeam(away ?? "");
-        if (!md) { out.push(`Riga ${i + 1}: giornata ${gio} inesistente`); continue; }
-        if (!ht || !at) { out.push(`Riga ${i + 1}: squadra non trovata (${home} / ${away})`); continue; }
+        if (!md) {
+          out.push(`Riga ${i + 1}: giornata ${gio} inesistente`);
+          continue;
+        }
+        if (!ht || !at) {
+          out.push(`Riga ${i + 1}: squadra non trovata (${home} / ${away})`);
+          continue;
+        }
         if (extId && (matches ?? []).some((m) => m.external_id === extId)) {
           out.push(`Riga ${i + 1}: già importata (${extId})`);
           continue;
@@ -705,7 +854,11 @@ function ImportSection({ leagueId }: { leagueId: string }) {
           onChange={(e) => setText(e.target.value)}
           placeholder="1;2026-10-18;20:30;Team A;Team B;FIPAV_1;upcoming;;"
         />
-        <button className={`${buttonClass} mt-3`} disabled={!text.trim() || run.isPending} onClick={() => run.mutate()}>
+        <button
+          className={`${buttonClass} mt-3`}
+          disabled={!text.trim() || run.isPending}
+          onClick={() => run.mutate()}
+        >
           Importa
         </button>
         {report.length > 0 ? (
@@ -728,7 +881,12 @@ function FipavSection({ leagueId }: { leagueId: string }) {
   const { data: teams } = useTeams(leagueId);
   const league = membership?.league;
   const seasonYear = (league?.season ?? "").match(/\d{4}/)?.[0] ?? "2026";
-  const [form, setForm] = useState({ seasonYear, series: "B", sex: "M", girone: league?.group_name ?? "B" });
+  const [form, setForm] = useState({
+    seasonYear,
+    series: "B",
+    sex: "M",
+    girone: league?.group_name ?? "B",
+  });
   const [summary, setSummary] = useState<SyncSummary | null>(null);
 
   useEffect(() => {
@@ -746,7 +904,9 @@ function FipavSection({ leagueId }: { leagueId: string }) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("calendar_sync_logs")
-        .select("created_at, status, matchdays_found, matches_found, matches_created, matches_updated, matches_skipped, teams_created")
+        .select(
+          "created_at, status, matchdays_found, matches_found, matches_created, matches_updated, matches_skipped, teams_created",
+        )
         .eq("league_id", leagueId)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -766,7 +926,8 @@ function FipavSection({ leagueId }: { leagueId: string }) {
     onError: () =>
       setSummary({
         ok: false,
-        message: "Impossibile aggiornare il calendario. Le partite già presenti non sono state modificate.",
+        message:
+          "Impossibile aggiornare il calendario. Le partite già presenti non sono state modificate.",
         sourceUrl: "",
         matchdaysFound: 0,
         matchesFound: 0,
@@ -792,27 +953,48 @@ function FipavSection({ leagueId }: { leagueId: string }) {
 
         <div className="grid grid-cols-2 gap-3">
           <Field label="Anno stagione">
-            <input className={inputClass} value={form.seasonYear} onChange={(e) => setForm({ ...form, seasonYear: e.target.value })} />
+            <input
+              className={inputClass}
+              value={form.seasonYear}
+              onChange={(e) => setForm({ ...form, seasonYear: e.target.value })}
+            />
           </Field>
           <Field label="Serie">
-            <input className={inputClass} value={form.series} onChange={(e) => setForm({ ...form, series: e.target.value })} />
+            <input
+              className={inputClass}
+              value={form.series}
+              onChange={(e) => setForm({ ...form, series: e.target.value })}
+            />
           </Field>
           <Field label="Genere (M/F)">
-            <input className={inputClass} value={form.sex} onChange={(e) => setForm({ ...form, sex: e.target.value })} />
+            <input
+              className={inputClass}
+              value={form.sex}
+              onChange={(e) => setForm({ ...form, sex: e.target.value })}
+            />
           </Field>
           <Field label="Girone">
-            <input className={inputClass} value={form.girone} onChange={(e) => setForm({ ...form, girone: e.target.value })} />
+            <input
+              className={inputClass}
+              value={form.girone}
+              onChange={(e) => setForm({ ...form, girone: e.target.value })}
+            />
           </Field>
         </div>
 
-        <button className={`${buttonClass} mt-3`} disabled={sync.isPending} onClick={() => sync.mutate()}>
+        <button
+          className={`${buttonClass} mt-3`}
+          disabled={sync.isPending}
+          onClick={() => sync.mutate()}
+        >
           {sync.isPending ? "Aggiornamento in corso..." : "🔄 Aggiorna calendario"}
         </button>
 
         {lastLog.data ? (
           <p className="mt-3 text-xs text-muted-foreground">
-            Ultima sincronizzazione: {new Date(lastLog.data.created_at).toLocaleString("it-IT", { timeZone: "Europe/Rome" })} ·{" "}
-            {lastLog.data.matches_found} partite trovate
+            Ultima sincronizzazione:{" "}
+            {new Date(lastLog.data.created_at).toLocaleString("it-IT", { timeZone: "Europe/Rome" })}{" "}
+            · {lastLog.data.matches_found} partite trovate
           </p>
         ) : null}
 
@@ -826,7 +1008,9 @@ function FipavSection({ leagueId }: { leagueId: string }) {
                 <li>✓ {summary.matchesCreated} partite nuove</li>
                 <li>✓ {summary.matchesUpdated} partite aggiornate</li>
                 <li>✓ {summary.teamsCreated} nuove squadre</li>
-                {summary.matchesSkipped > 0 ? <li>⚠ {summary.matchesSkipped} partite non importate</li> : null}
+                {summary.matchesSkipped > 0 ? (
+                  <li>⚠ {summary.matchesSkipped} partite non importate</li>
+                ) : null}
                 {summary.errors.map((e, i) => (
                   <li key={i}>⚠ {e}</li>
                 ))}

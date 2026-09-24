@@ -17,7 +17,9 @@ export function BottomNav({ isAdmin }: { isAdmin: boolean }) {
             <Link
               to={item.to}
               className="block py-3 text-center text-xs font-medium text-muted-foreground"
-              activeProps={{ className: "block py-3 text-center text-xs font-semibold text-foreground" }}
+              activeProps={{
+                className: "block py-3 text-center text-xs font-semibold text-foreground",
+              }}
             >
               {item.label}
             </Link>
